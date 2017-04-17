@@ -1,0 +1,19 @@
+{
+  "name": "d3-sunburst",
+  "version": "1.0.0",
+  "description": "Interactive sunburst chart based on d3.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojoaxel/d3-sunburst.git"
+  },
+  "author": "Kerry Rodden",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mojoaxel/d3-sunburst/issues"
+  },
+  "homepage": "https://github.com/mojoaxel/d3-sunburst#readme"
+}
