@@ -1,0 +1,11 @@
+{
+  "name": "d3-sunburst",
+  "version": "1.0.0",
+  "description": "Sequences sunburst",
+  "author": "Kerry Rodden",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://gist.github.com/kerryrodden/7090426"
+  },
+  "homepage": "https://gist.github.com/kerryrodden/7090426#file-readme-md"
+}
