@@ -4,6 +4,7 @@
   "description": "Interactive sunburst chart based on d3.js",
   "main": "sunburst.js",
   "scripts": {
+    "lint": "eslint --fix *.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +22,8 @@
   "homepage": "https://github.com/mojoaxel/d3-sunburst#readme",
   "dependencies": {
     "d3": "^3.5.17"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0"
   }
 }

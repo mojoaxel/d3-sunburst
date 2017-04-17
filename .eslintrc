@@ -1,0 +1,13 @@
+{
+  "extends": "eslint:recommended",
+
+  "rules": {
+    "no-unused-vars": ["error", {"args": "none"}],
+    "indent": ["error", "tab"],
+    "no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
+  },
+
+  "globals": {
+    "define": true
+  }
+}
