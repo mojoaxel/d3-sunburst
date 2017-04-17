@@ -1,12 +1,16 @@
-(NOTE: this block is d3 version 3. Go [here](http://bl.ocks.org/kerryrodden/766f8f6d31f645c39f488a0befa1e3c8) instead if you want a version of this block that works with d3 v4.)
+**NOTE: This requires d3 version 3. Go [here](http://gist.github.com/kerryrodden/766f8f6d31f645c39f488a0befa1e3c8) if you want a version that works with d3 version 4, instead.**
 
-This example shows how it is possible to use a [D3 sunburst visualization](http://bl.ocks.org/mbostock/4063423) (partition layout) with data that describes sequences of events.
+---
+
+This example shows how it is possible to use a [D3 sunburst visualization](http://bl.ocks.org/mbostock/4063423) (partition layout) with data that describes sequences of events:
+
+![](thumbnail.png)
 
 A good use case is to summarize navigation paths through a web site, as in the sample synthetic data file (visit_sequences.csv). The visualization makes it easy to understand visits that start directly on a product page (e.g. after landing there from a search engine), compared to visits where users arrive on the site's home page and navigate from there. Where a funnel lets you understand a single pre-selected path, this allows you to see all possible paths.
 
 Features:
 
-* works with data that is in a CSV format (you don't need to pre-generate a hierarchical JSON file, unless your data file is very large) 
+* works with data that is in a CSV format (you don't need to pre-generate a hierarchical JSON file, unless your data file is very large)
 * interactive breadcrumb trail helps to emphasize the sequence, so that it is easy for a first-time user to understand what they are seeing
 * percentages are shown explicitly, to help overcome the distortion of the data that occurs when using a radial presentation
 

@@ -1,3 +1,22 @@
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['d3'], factory);
+  } else {
+    root.sunburst = factory(root.d3);
+  }
+}(this, function (d3) {
+
+
+function initialization(csvFile) {
+  // Use d3.text and d3.csv.parseRows so that we do not need to have a header
+  // row, and can receive the csv as an array of arrays.
+  d3.text(csvFile, function(text) {
+    var csv = d3.csv.parseRows(text);
+    var json = buildHierarchy(csv);
+    createVisualization(json);
+  });
+}
+
 // Dimensions of sunburst.
 var width = 750;
 var height = 600;
@@ -19,35 +38,29 @@ var colors = {
 };
 
 // Total size of all segments; we set this later, after loading the data.
-var totalSize = 0; 
+var totalSize = 0;
 
-var vis = d3.select("#chart").append("svg:svg")
+var vis, arc, partition;
+
+// Main function to draw and set up the visualization, once we have the data.
+function createVisualization(json) {
+
+  vis = d3.select("#chart").append("svg:svg")
     .attr("width", width)
     .attr("height", height)
     .append("svg:g")
     .attr("id", "container")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-var partition = d3.layout.partition()
-    .size([2 * Math.PI, radius * radius])
-    .value(function(d) { return d.size; });
+  arc = d3.svg.arc()
+      .startAngle(function(d) { return d.x; })
+      .endAngle(function(d) { return d.x + d.dx; })
+      .innerRadius(function(d) { return Math.sqrt(d.y); })
+      .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-var arc = d3.svg.arc()
-    .startAngle(function(d) { return d.x; })
-    .endAngle(function(d) { return d.x + d.dx; })
-    .innerRadius(function(d) { return Math.sqrt(d.y); })
-    .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-
-// Use d3.text and d3.csv.parseRows so that we do not need to have a header
-// row, and can receive the csv as an array of arrays.
-d3.text("visit-sequences.csv", function(text) {
-  var csv = d3.csv.parseRows(text);
-  var json = buildHierarchy(csv);
-  createVisualization(json);
-});
-
-// Main function to draw and set up the visualization, once we have the data.
-function createVisualization(json) {
+  partition = d3.layout.partition()
+      .size([2 * Math.PI, radius * radius])
+      .value(function(d) { return d.size; });
 
   // Basic setup of page elements.
   initializeBreadcrumbTrail();
@@ -262,7 +275,7 @@ function toggleLegend() {
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
 // for a partition layout. The first column is a sequence of step names, from
-// root to leaf, separated by hyphens. The second column is a count of how 
+// root to leaf, separated by hyphens. The second column is a count of how
 // often that sequence occurred.
 function buildHierarchy(csv) {
   var root = {"name": "root", "children": []};
@@ -303,3 +316,7 @@ function buildHierarchy(csv) {
   }
   return root;
 };
+
+// module return
+return initialization;
+}));

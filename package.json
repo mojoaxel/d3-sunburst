@@ -1,11 +1,25 @@
 {
   "name": "d3-sunburst",
   "version": "1.0.0",
-  "description": "Sequences sunburst",
-  "author": "Kerry Rodden",
+  "description": "Interactive sunburst chart based on d3.js",
+  "main": "sunburst.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojoaxel/d3-sunburst.git"
+  },
+  "author": "Alexander Wunschik <mail@wunschik.net> (https://github.com/mojoaxel)",
+  "contributors": [
+    "Kerry Rodden"
+  ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://gist.github.com/kerryrodden/7090426"
+    "url": "https://github.com/mojoaxel/d3-sunburst/issues"
   },
-  "homepage": "https://gist.github.com/kerryrodden/7090426#file-readme-md"
+  "homepage": "https://github.com/mojoaxel/d3-sunburst#readme",
+  "dependencies": {
+    "d3": "^3.5.17"
+  }
 }
