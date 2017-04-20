@@ -3,19 +3,22 @@ body {
   font-size: 12px;
   font-weight: 400;
   background-color: #fff;
-  width: 960px;
-  height: 700px;
-  margin-top: 10px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 #main {
   float: left;
   width: 750px;
+  padding: 10px;
 }
 
 #sidebar {
   float: right;
   width: 100px;
+  padding: 10px;
 }
 
 #sequence {
@@ -33,7 +36,9 @@ body {
 }
 
 #chart {
-  position: relative;
+  left: 50%;
+  position: absolute;
+  margin-left: -375px;
 }
 
 #chart path {
@@ -42,7 +47,7 @@ body {
 
 #explanation {
   position: absolute;
-  top: 260px;
+  top: 280px;
   left: 305px;
   width: 140px;
   text-align: center;

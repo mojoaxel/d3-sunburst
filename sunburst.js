@@ -143,7 +143,7 @@
 		d3.select("#trail")
 			.style("visibility", "hidden");
 
-			// Deactivate all segments during transition.
+		// Deactivate all segments during transition.
 		d3.selectAll("path").on("mouseover", null);
 
 		// Transition each segment to full opacity and then reactivate it.
