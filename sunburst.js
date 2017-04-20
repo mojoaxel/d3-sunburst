@@ -29,9 +29,9 @@
 			s: 3,
 			t: 10
 		}
-	}
+	};
 
-	var Sunburst = function(options, data = null) {
+	var Sunburst = function(options, data) {
 		this.opt = Object.assign({}, defaultOptions, options);
 
 		// Total size of all segments; we set this later, after loading the data.
