@@ -7,23 +7,31 @@
 }(this, function (d3) {
 
 	var defaultOptions = {
+		// DOM Selectors
+		selectors: {
+			breadcrumbs: 	'#sunburst-breadcrumbs',
+			chart: 				'#sunburst-chart',
+			description: 	'#sunburst-description',
+			legend: 			'#sunburst-legend'
+		},
+
 		// Dimensions of sunburst.
 		width: 750,
 		height: 600,
 
 		// Mapping of step names to colors.
-		colors: {
-			"home": "#5687d1",
-			"product": "#7b615c",
-			"search": "#de783b",
-			"account": "#6ab975",
-			"other": "#a173d1",
-			"end": "#bbbbbb"
+		colors: {},
+
+		// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
+		breadcrumbs: {
+			w: 75,
+			h: 30,
+			s: 3,
+			t: 10
 		}
 	}
 
-	var Sunburst = function(selector, options, data = null) {
-		this.chartSelector = selector;
+	var Sunburst = function(options, data = null) {
 		this.opt = Object.assign({}, defaultOptions, options);
 
 		// Total size of all segments; we set this later, after loading the data.
@@ -44,21 +52,16 @@
 		}.bind(this));
 	}
 
-	// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
-	var b = {
-		w: 75, h: 30, s: 3, t: 10
-	};
-
 	// Main function to draw and set up the visualization, once we have the data.
 	Sunburst.prototype.createVisualization = function(json) {
 		var that = this;
 		var radius = Math.min(this.opt.width, this.opt.height) / 2
 
-		this.vis = d3.select(this.chartSelector).append("svg:svg")
+		this.vis = d3.select(this.opt.selectors.chart).append("svg:svg")
 			.attr("width", this.opt.width)
 			.attr("height", this.opt.height)
 			.append("svg:g")
-			.attr("id", "container")
+			.attr("id", "sunburst-container")
 			.attr("transform", "translate(" + this.opt.width / 2 + "," + this.opt.height / 2 + ")");
 
 		var arc = d3.svg.arc()
@@ -74,7 +77,6 @@
 		// Basic setup of page elements.
 		this.initializeBreadcrumbTrail();
 		this.drawLegend();
-		d3.select("#togglelegend").on("click", this.toggleLegend);
 
 		// Bounding circle underneath the sunburst, to make it easier to detect
 		// when the mouse leaves the parent g.
@@ -82,7 +84,7 @@
 			.attr("r", radius)
 			.style("opacity", 0);
 
-			// For efficiency, filter nodes to keep only those large enough to see.
+		// For efficiency, filter nodes to keep only those large enough to see.
 		var nodes = partition.nodes(json)
 			.filter(function(d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
@@ -98,8 +100,8 @@
 			.style("opacity", 1)
 			.on("mouseover", that.mouseover.bind(this));
 
-			// Add the mouseleave handler to the bounding circle.
-		d3.select("#container").on("mouseleave", that.mouseleave.bind(this));
+		// Add the mouseleave handler to the bounding circle.
+		d3.select("#sunburst-container").on("mouseleave", that.mouseleave.bind(this));
 
 		// Get total size of the tree = value of root node from partition.
 		this.totalSize = path.node().__data__.value;
@@ -114,10 +116,8 @@
 			percentageString = "< 0.1%";
 		}
 
-		d3.select("#percentage")
-			.text(percentageString);
-
-		d3.select("#explanation")
+		d3.select(this.opt.selectors.description)
+			.text(percentageString)
 			.style("visibility", "");
 
 		var sequenceArray = this.getAncestors(d);
@@ -147,6 +147,7 @@
 		d3.selectAll("path").on("mouseover", null);
 
 		// Transition each segment to full opacity and then reactivate it.
+		//TODO cancel this transition on mouseover
 		d3.selectAll("path")
 			.transition()
 			.duration(1000)
@@ -155,7 +156,7 @@
 				d3.select(this).on("mouseover", that.mouseover.bind(that));
 			});
 
-		d3.select("#explanation")
+		d3.select(this.opt.selectors.description)
 			.style("visibility", "hidden");
 	}
 
@@ -173,7 +174,7 @@
 
 	Sunburst.prototype.initializeBreadcrumbTrail = function() {
 		// Add the svg area.
-		var trail = d3.select("#sequence").append("svg:svg")
+		var trail = d3.select(this.opt.selectors.breadcrumbs).append("svg:svg")
 			.attr("width", this.opt.width)
 			.attr("height", 50)
 			.attr("id", "trail");
@@ -186,6 +187,8 @@
 	// Generate a string that describes the points of a breadcrumb polygon.
 	Sunburst.prototype.breadcrumbPoints = function(d, i) {
 		var points = [];
+		var b = this.opt.breadcrumbs;
+
 		points.push("0,0");
 		points.push(b.w + ",0");
 		points.push(b.w + b.t + "," + (b.h / 2));
@@ -200,17 +203,18 @@
 	// Update the breadcrumb trail to show the current sequence and percentage.
 	Sunburst.prototype.updateBreadcrumbs = function(nodeArray, percentageString) {
 		var that = this;
+		var b = this.opt.breadcrumbs;
 
 		// Data join; key function combines name and depth (= position in sequence).
 		var g = d3.select("#trail")
 			.selectAll("g")
 			.data(nodeArray, function(d) { return d.name + d.depth; });
 
-			// Add breadcrumb and label for entering nodes.
+		// Add breadcrumb and label for entering nodes.
 		var entering = g.enter().append("svg:g");
 
 		entering.append("svg:polygon")
-			.attr("points", this.breadcrumbPoints)
+			.attr("points", this.breadcrumbPoints.bind(that))
 			.style("fill", function(d) { return that.opt.colors[d.name]; });
 
 		entering.append("svg:text")
@@ -220,7 +224,7 @@
 			.attr("text-anchor", "middle")
 			.text(function(d) { return d.name; });
 
-			// Set position for entering and updating nodes.
+		// Set position for entering and updating nodes.
 		g.attr("transform", function(d, i) {
 			return "translate(" + i * (b.w + b.s) + ", 0)";
 		});
@@ -236,7 +240,7 @@
 			.attr("text-anchor", "middle")
 			.text(percentageString);
 
-			// Make the breadcrumb trail visible, if it's hidden.
+		// Make the breadcrumb trail visible, if it's hidden.
 		d3.select("#trail")
 			.style("visibility", "");
 
@@ -249,7 +253,7 @@
 			w: 75, h: 30, s: 3, r: 3
 		};
 
-		var legend = d3.select("#legend").append("svg:svg")
+		var legend = d3.select(this.opt.selectors.legend).append("svg:svg")
 			.attr("width", li.w)
 			.attr("height", d3.keys(this.opt.colors).length * (li.h + li.s));
 
@@ -273,15 +277,6 @@
 			.attr("dy", "0.35em")
 			.attr("text-anchor", "middle")
 			.text(function(d) { return d.key; });
-	}
-
-	Sunburst.prototype.toggleLegend = function() {
-		var legend = d3.select("#legend");
-		if (legend.style("visibility") == "hidden") {
-			legend.style("visibility", "");
-		} else {
-			legend.style("visibility", "hidden");
-		}
 	}
 
 	// Take a 2-column CSV and transform it into a hierarchical structure suitable

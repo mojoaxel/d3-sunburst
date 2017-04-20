@@ -21,31 +21,31 @@ body {
   padding: 10px;
 }
 
-#sequence {
+#sunburst-breadcrumbs {
   width: 600px;
   height: 70px;
 }
 
-#legend {
+#sunburst-legend {
   padding: 10px 0 0 3px;
 }
 
-#sequence text, #legend text {
+#sunburst-breadcrumbs text, #sunburst-legend text {
   font-weight: 600;
   fill: #fff;
 }
 
-#chart {
+#sunburst-chart {
   left: 50%;
   position: absolute;
   margin-left: -375px;
 }
 
-#chart path {
+#sunburst-chart path {
   stroke: #fff;
 }
 
-#explanation {
+#sunburst-description {
   position: absolute;
   top: 280px;
   left: 305px;
@@ -53,8 +53,5 @@ body {
   text-align: center;
   color: #666;
   z-index: -1;
-}
-
-#percentage {
   font-size: 2.5em;
 }
