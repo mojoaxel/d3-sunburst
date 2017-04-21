@@ -109,7 +109,7 @@
 		d3.select(this.opt.selectors.chart).on("mouseleave", that.mouseleave.bind(this));
 
 		// Get total size of the tree = value of root node from partition.
-		var node =  path.node();
+		var node =	path.node();
 		this.totalSize = node ? node.__data__.value : 0;
 	}
 
