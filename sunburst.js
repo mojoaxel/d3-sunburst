@@ -106,10 +106,11 @@
 			.on("mouseover", that.mouseover.bind(this));
 
 		// Add the mouseleave handler to the bounding circle.
-		d3.select("#sunburst-container").on("mouseleave", that.mouseleave.bind(this));
+		d3.select(this.opt.selectors.chart).on("mouseleave", that.mouseleave.bind(this));
 
 		// Get total size of the tree = value of root node from partition.
-		this.totalSize = path.node().__data__.value;
+		var node =  path.node();
+		this.totalSize = node ? node.__data__.value : 0;
 	}
 
 	// Fade all but the current sequence, and show it in the breadcrumb trail.
