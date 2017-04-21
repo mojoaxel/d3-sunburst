@@ -28,7 +28,10 @@
 			h: 30,
 			s: 3,
 			t: 10
-		}
+		},
+
+		// parser settings
+		separator: '-'
 	};
 
 	var Sunburst = function(options, data) {
@@ -38,7 +41,8 @@
 		this.totalSize = 0;
 
 		if (data) {
-			this.createVisualization(data);
+			var json = this.buildHierarchy(data);
+			this.createVisualization(json);
 		}
 	}
 
@@ -46,8 +50,8 @@
 		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
 		// row, and can receive the csv as an array of arrays.
 		d3.text(csvFile, function(text) {
-			var csv = d3.csv.parseRows(text);
-			var json = this.buildHierarchy(csv);
+			var array = d3.csv.parseRows(text);
+			var json = this.buildHierarchy(array);
 			this.createVisualization(json);
 		}.bind(this));
 	}
@@ -56,6 +60,7 @@
 	Sunburst.prototype.createVisualization = function(json) {
 		var that = this;
 		var radius = Math.min(this.opt.width, this.opt.height) / 2
+
 
 		this.vis = d3.select(this.opt.selectors.chart).append("svg:svg")
 			.attr("width", this.opt.width)
@@ -283,15 +288,15 @@
 	// for a partition layout. The first column is a sequence of step names, from
 	// root to leaf, separated by hyphens. The second column is a count of how
 	// often that sequence occurred.
-	Sunburst.prototype.buildHierarchy = function(csv) {
+	Sunburst.prototype.buildHierarchy = function(array) {
 		var root = {"name": "root", "children": []};
-		for (var i = 0; i < csv.length; i++) {
-			var sequence = csv[i][0];
-			var size = +csv[i][1];
+		for (var i = 0; i < array.length; i++) {
+			var sequence = array[i][0];
+			var size = +array[i][1];
 			if (isNaN(size)) { // e.g. if this is a header row
 				continue;
 			}
-			var parts = sequence.split("-");
+			var parts = sequence.split(this.opt.separator);
 			var currentNode = root;
 			for (var j = 0; j < parts.length; j++) {
 				var children = currentNode["children"];
