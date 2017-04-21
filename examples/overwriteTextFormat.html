@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Sequences sunburst</title>
+		<link rel="stylesheet" type="text/css" href="../sunburst.css"/>
+		<script src="../node_modules/d3/d3.min.js" type="text/javascript"></script>
+		<script src="../sunburst.js" type="text/javascript"></script>
+
+		<style type="text/css">
+			#sunburst-description {
+				font-size: 2em;
+				line-height: 1.5em;
+				margin-top: -2em;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<div id="sunburst-breadcrumbs"></div>
+			<div id="sunburst-chart">
+				<div id="sunburst-description"></div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			(function() {
+				// create chart
+				var sunburst = new Sunburst({
+					colors: {
+						"home": "#5687d1",
+						"product": "#7b615c",
+						"search": "#de783b",
+						"account": "#6ab975",
+						"other": "#a173d1",
+						"end": "#bbbbbb"
+					}
+				});
+
+				sunburst.formatDescription = function(sequence, value, percentage) {
+					var obj = sequence[sequence.length-1];
+					return "<b>" + obj.name + "</b><br>" +
+						value + "<br>" +
+						percentage + " %";
+				}
+
+				sunburst.formatBreadcrumbText = function(sequence, value, percentage) {
+					return "Val: " + value.toExponential();
+				}
+
+				// load data from file
+				sunburst.loadCsv("visit-sequences.csv");
+
+
+			})();
+		</script>
+
+	</body>
+</html>

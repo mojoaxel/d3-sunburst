@@ -117,17 +117,10 @@
 	Sunburst.prototype.mouseover = function(d) {
 
 		var percentage = (100 * d.value / this.totalSize).toPrecision(3);
-		var percentageString = percentage + "%";
-		if (percentage < 0.1) {
-			percentageString = "< 0.1%";
-		}
-
-		d3.select(this.opt.selectors.description)
-			.text(percentageString)
-			.style("visibility", "");
-
 		var sequenceArray = this.getAncestors(d);
-		this.updateBreadcrumbs(sequenceArray, percentageString);
+
+		this.updateDescription(sequenceArray, d.value, percentage)
+		this.updateBreadcrumbs(sequenceArray, d.value, percentage);
 
 		// Fade all the segments.
 		d3.selectAll("path")
@@ -206,15 +199,31 @@
 		return points.join(" ");
 	}
 
+	// format the description string in the middle of the chart
+	Sunburst.prototype.formatDescription = function(sequence, value, percentage) {
+		return percentage < 0.1 ? "< 0.1%" : percentage + '%';
+	}
+
+	Sunburst.prototype.updateDescription = function(sequence, value, percentage) {
+		d3.select(this.opt.selectors.description)
+			.html(this.formatDescription(sequence, value, percentage))
+			.style("visibility", "");
+	}
+
+	// format the text at the end of the breadcrumbs
+	Sunburst.prototype.formatBreadcrumbText = function(sequence, value, percentage) {
+		return value + " (" + (percentage < 0.1 ? "< 0.1%" : percentage + "%") + ")";
+	}
+
 	// Update the breadcrumb trail to show the current sequence and percentage.
-	Sunburst.prototype.updateBreadcrumbs = function(nodeArray, percentageString) {
+	Sunburst.prototype.updateBreadcrumbs = function(sequence, value, percentage) {
 		var that = this;
 		var b = this.opt.breadcrumbs;
 
 		// Data join; key function combines name and depth (= position in sequence).
 		var g = d3.select("#trail")
 			.selectAll("g")
-			.data(nodeArray, function(d) { return d.name + d.depth; });
+			.data(sequence, function(d) { return d.name + d.depth; });
 
 		// Add breadcrumb and label for entering nodes.
 		var entering = g.enter().append("svg:g");
@@ -240,11 +249,11 @@
 
 		// Now move and update the percentage at the end.
 		d3.select("#trail").select("#endlabel")
-			.attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+			.attr("x", (sequence.length + 1) * (b.w + b.s))
 			.attr("y", b.h / 2)
 			.attr("dy", "0.35em")
 			.attr("text-anchor", "middle")
-			.text(percentageString);
+			.html(this.formatBreadcrumbText(sequence, value, percentage));
 
 		// Make the breadcrumb trail visible, if it's hidden.
 		d3.select("#trail")
