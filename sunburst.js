@@ -41,9 +41,13 @@
 		this.totalSize = 0;
 
 		if (data) {
-			var json = this.buildHierarchy(data);
-			this.createVisualization(json);
+			this.setData(data);
 		}
+	}
+
+	Sunburst.prototype.setData = function(data) {
+		var json = this.buildHierarchy(data);
+		this.createVisualization(json);
 	}
 
 	Sunburst.prototype.loadCsv = function(csvFile) {
@@ -94,7 +98,7 @@
 			.data(nodes)
 			.enter();
 
-		var arcs = all.append("svg:path")
+		all.append("svg:path")
 			.attr("display", function(d) { return d.depth ? null : "none"; })
 			.attr("d", arc)
 			.attr("fill-rule", "evenodd")
