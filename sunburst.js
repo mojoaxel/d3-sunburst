@@ -83,21 +83,18 @@
 		this.initializeBreadcrumbTrail();
 		this.drawLegend();
 
-		// Bounding circle underneath the sunburst, to make it easier to detect
-		// when the mouse leaves the parent g.
-		this.vis.append("svg:circle")
-			.attr("r", radius)
-			.style("opacity", 0);
-
 		// For efficiency, filter nodes to keep only those large enough to see.
 		var nodes = partition.nodes(json)
 			.filter(function(d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
 			});
 
-		var path = this.vis.data([json]).selectAll("path")
+		var all = this.vis.data([json])
+			.selectAll("path")
 			.data(nodes)
-			.enter().append("svg:path")
+			.enter();
+
+		var arcs = all.append("svg:path")
 			.attr("display", function(d) { return d.depth ? null : "none"; })
 			.attr("d", arc)
 			.attr("fill-rule", "evenodd")
@@ -105,11 +102,39 @@
 			.style("opacity", 1)
 			.on("mouseover", that.mouseover.bind(this));
 
+		// some tests with text
+		/*
+		var arcText = d3.svg.arc()
+			.startAngle(function(d) { return d.x; })
+			.endAngle(function(d) { return d.x + d.dx; })
+			.innerRadius(function(d) { return Math.sqrt(d.y * 0.4); })
+			.outerRadius(function(d) { return Math.sqrt(d.y + d.dy * 0.4); })
+
+		var arcsText = arcs.append("svg:path")
+			.attr("d", arcText)
+			.style("fill", "none")
+			.attr("id", function(d, i){
+				return "s" + i;
+			});
+		var texts = all.append("svg:text")
+			.attr("dx", "0")
+			.attr("dy", "0")
+			.style("text-anchor","middle")
+			.append("textPath")
+			.attr("xlink:href", function(d, i){
+				return "#s" + i;
+			})
+			.attr("startOffset",function(d,i){return "25%";})
+			.text(function (d) {
+				return d.depth === 1 ? d.name : '';
+			});
+		*/
+
 		// Add the mouseleave handler to the bounding circle.
 		d3.select(this.opt.selectors.chart).on("mouseleave", that.mouseleave.bind(this));
 
 		// Get total size of the tree = value of root node from partition.
-		var node =	path.node();
+		var node =	all.node();
 		this.totalSize = node ? node.__data__.value : 0;
 	}
 
