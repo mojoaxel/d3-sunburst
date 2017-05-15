@@ -1,0 +1,22 @@
+body {
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  float: left;
+  width: 750px;
+  padding: 10px;
+}
+
+#sidebar {
+  float: right;
+  width: 100px;
+  padding: 10px;
+}
