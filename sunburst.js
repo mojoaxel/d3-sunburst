@@ -338,7 +338,7 @@
 			var parts = sequence.split(this.opt.separator);
 			var currentNode = root;
 			for (var j = 0; j < parts.length; j++) {
-				var children = currentNode["children"];
+				var children = currentNode["children"] || [];
 				var nodeName = parts[j];
 				var childNode;
 				if (j + 1 < parts.length) {
