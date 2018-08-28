@@ -152,7 +152,7 @@
 		this.updateBreadcrumbs(sequenceArray, d.value, percentage);
 
 		// Fade all the segments.
-		d3.selectAll("path")
+		this.vis.selectAll("path")
 			.style("opacity", 0.3);
 
 			// Then highlight only those that are an ancestor of the current segment.
