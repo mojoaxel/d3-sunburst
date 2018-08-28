@@ -22,6 +22,10 @@
 		// Mapping of step names to colors.
 		colors: {},
 
+		// If a color-name is missing this color-scale is used
+		colorscale: d3.scale.category20(),
+		colorScaleLength: 20,
+
 		// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 		breadcrumbs: {
 			w: 75,
@@ -33,6 +37,20 @@
 		// parser settings
 		separator: '-'
 	};
+
+	/**
+	 * This hashing function returns a number between 0 and 4294967295 (inclusive) from the given string.
+	 * @see https://github.com/darkskyapp/string-hash
+	 * @param {String} str 
+	 */
+	function hash(str) {
+		var hash = 5381;
+		var i = str.length;
+		while(i) {
+			hash = (hash * 33) ^ str.charCodeAt(--i);
+		}
+		return hash >>> 0;
+	}
 
 	var Sunburst = function(options, data) {
 		this.opt = Object.assign({}, defaultOptions, options);
@@ -102,7 +120,7 @@
 			.attr("display", function(d) { return d.depth ? null : "none"; })
 			.attr("d", arc)
 			.attr("fill-rule", "evenodd")
-			.style("fill", function(d) { return that.opt.colors[d.name]; })
+			.style("fill", function(d) { return that.opt.colors[d.name] || that.opt.colorscale(hash(d.name) % that.opt.colorScaleLength); })
 			.style("opacity", 1)
 			.on("mouseover", that.mouseover.bind(this));
 
