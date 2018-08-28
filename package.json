@@ -1,6 +1,6 @@
 {
   "name": "d3-sunburst",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "Interactive sunburst chart based on d3.js",
   "main": "sunburst.js",
   "scripts": {
