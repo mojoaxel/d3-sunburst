@@ -63,6 +63,10 @@
 		}
 	}
 
+	Sunburst.prototype.getColorByName = function(name) {
+		return this.opt.colors[name] || this.opt.colorScale(hash(name) % this.opt.colorScaleLength);
+	}
+
 	Sunburst.prototype.setData = function(data) {
 		var json = this.buildHierarchy(data);
 		this.createVisualization(json);
@@ -120,7 +124,7 @@
 			.attr("display", function(d) { return d.depth ? null : "none"; })
 			.attr("d", arc)
 			.attr("fill-rule", "evenodd")
-			.style("fill", function(d) { return that.opt.colors[d.name] || that.opt.colorScale(hash(d.name) % that.opt.colorScaleLength); })
+			.style("fill", function(d) { return that.getColorByName(d.name); })
 			.style("opacity", 1)
 			.on("mouseover", that.mouseover.bind(this));
 
@@ -277,7 +281,7 @@
 
 		entering.append("svg:polygon")
 			.attr("points", this.breadcrumbPoints.bind(that))
-			.style("fill", function(d) { return that.opt.colors[d.name]; });
+			.style("fill", function(d) { return that.getColorByName(d.name); });
 
 		entering.append("svg:text")
 			.attr("x", (b.w + b.t) / 2)
