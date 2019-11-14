@@ -166,6 +166,7 @@
 
 	// Fade all but the current sequence, and show it in the breadcrumb trail.
 	Sunburst.prototype.mouseover = function(d) {
+		if (!d) return;
 
 		var percentage = (100 * d.value / this.totalSize).toPrecision(3);
 		var sequenceArray = this.getAncestors(d);
@@ -177,7 +178,7 @@
 		this.vis.selectAll("path")
 			.style("opacity", 0.3);
 
-			// Then highlight only those that are an ancestor of the current segment.
+		// Then highlight only those that are an ancestor of the current segment.
 		this.vis.selectAll("path")
 			.filter(function(node) {
 				return (sequenceArray.indexOf(node) >= 0);
@@ -190,15 +191,15 @@
 		var that = this;
 
 		// Hide the breadcrumb trail
-		d3.select("#trail")
+		d3.select(this.opt.selectors.breadcrumbs).select("#trail")
 			.style("visibility", "hidden");
 
 		// Deactivate all segments during transition.
-		d3.selectAll("path").on("mouseover", null);
+		this.vis.selectAll("path").on("mouseover", null);
 
 		// Transition each segment to full opacity and then reactivate it.
 		//TODO cancel this transition on mouseover
-		d3.selectAll("path")
+		this.vis.selectAll("path")
 			.transition()
 			.duration(1000)
 			.style("opacity", 1)
@@ -230,8 +231,8 @@
 			.attr("id", "trail");
 			// Add the label at the end, for the percentage.
 		trail.append("svg:text")
-		.attr("id", "endlabel")
-		.style("fill", "#000");
+			.attr("id", "endlabel")
+			.style("fill", "#000");
 	}
 
 	// Generate a string that describes the points of a breadcrumb polygon.
@@ -299,7 +300,7 @@
 		g.exit().remove();
 
 		// Now move and update the percentage at the end.
-		d3.select("#trail").select("#endlabel")
+		d3.select(this.opt.selectors.breadcrumbs).select("#trail").select("#endlabel")
 			.attr("x", (sequence.length + 1) * (b.w + b.s))
 			.attr("y", b.h / 2)
 			.attr("dy", "0.35em")
@@ -307,7 +308,7 @@
 			.html(this.formatBreadcrumbText(sequence, value, percentage));
 
 		// Make the breadcrumb trail visible, if it's hidden.
-		d3.select("#trail")
+		d3.select(this.opt.selectors.breadcrumbs).select("#trail")
 			.style("visibility", "");
 
 	}
