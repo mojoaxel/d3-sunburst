@@ -24,6 +24,6 @@
     "d3": "^3.5.17"
   },
   "devDependencies": {
-    "eslint": "^3.19.0"
+    "eslint": "^6.6.0"
   }
 }
