@@ -12,6 +12,10 @@
     "url": "git+https://github.com/mojoaxel/d3-sunburst.git"
   },
   "author": "Alexander Wunschik <mail@wunschik.net> (https://github.com/mojoaxel)",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/mojoaxel"
+  },
   "contributors": [
     "Kerry Rodden"
   ],
