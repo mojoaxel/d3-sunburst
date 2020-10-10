@@ -23,7 +23,7 @@
 		colors: {},
 
 		// If a color-name is missing this color-scale is used
-		colorScale: d3.scale.category20(),
+		colorScale: d3.scaleOrdinal(d3.schemeCategory10),
 		colorScaleLength: 20,
 
 		// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -75,8 +75,8 @@
 	Sunburst.prototype.loadCsv = function(csvFile) {
 		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
 		// row, and can receive the csv as an array of arrays.
-		d3.text(csvFile, function(text) {
-			var array = d3.csv.parseRows(text);
+		d3.text(csvFile).then(function(text) {
+			var array = d3.csvParseRows(text);
 			var json = this.buildHierarchy(array);
 			this.createVisualization(json);
 		}.bind(this));
@@ -87,7 +87,6 @@
 		var that = this;
 		var radius = Math.min(this.opt.width, this.opt.height) / 2
 
-
 		this.vis = d3.select(this.opt.selectors.chart).append("svg:svg")
 			.attr("width", this.opt.width)
 			.attr("height", this.opt.height)
@@ -95,24 +94,28 @@
 			.attr("id", "sunburst-container")
 			.attr("transform", "translate(" + this.opt.width / 2 + "," + this.opt.height / 2 + ")");
 
-		var arc = d3.svg.arc()
-			.startAngle(function(d) { return d.x; })
-			.endAngle(function(d) { return d.x + d.dx; })
-			.innerRadius(function(d) { return Math.sqrt(d.y); })
-			.outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+		var arc = d3.arc()
+			.startAngle(function(d) { return d.x0; })
+			.endAngle(function(d) { return d.x1; })
+			.innerRadius(function(d) { return Math.sqrt(d.y0); })
+			.outerRadius(function(d) { return Math.sqrt(d.y1); });
 
-		var partition = d3.layout.partition()
-			.size([2 * Math.PI, radius * radius])
-			.value(function(d) { return d.size; });
+		var root = d3.hierarchy(json)
+			.sum(function(d) { return d.size; });
+
+		var partition = d3.partition()
+			.size([2 * Math.PI, radius * radius]);
+
+		partition(root);
 
 		// Basic setup of page elements.
 		this.initializeBreadcrumbTrail();
 		this.drawLegend();
 
 		// For efficiency, filter nodes to keep only those large enough to see.
-		var nodes = partition.nodes(json)
+		var nodes = root.descendants()
 			.filter(function(d) {
-				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				return (d.x1 - d.x0 > 0.005); // 0.005 radians = 0.29 degrees
 			});
 
 		var all = this.vis.data([json])
@@ -124,7 +127,7 @@
 			.attr("display", function(d) { return d.depth ? null : "none"; })
 			.attr("d", arc)
 			.attr("fill-rule", "evenodd")
-			.style("fill", function(d) { return that.getColorByName(d.name); })
+			.style("fill", function(d) { return that.getColorByName(d.data.name); })
 			.style("opacity", 1)
 			.on("mouseover", that.mouseover.bind(this));
 
@@ -165,7 +168,7 @@
 	}
 
 	// Fade all but the current sequence, and show it in the breadcrumb trail.
-	Sunburst.prototype.mouseover = function(d) {
+	Sunburst.prototype.mouseover = function(event, d) {
 		if (!d) return;
 
 		var percentage = (100 * d.value / this.totalSize).toPrecision(3);
@@ -203,7 +206,7 @@
 			.transition()
 			.duration(1000)
 			.style("opacity", 1)
-			.each("end", function() {
+			.on("end", function() {
 				d3.select(this).on("mouseover", that.mouseover.bind(that));
 			});
 
@@ -275,21 +278,21 @@
 		// Data join; key function combines name and depth (= position in sequence).
 		var g = d3.select("#trail")
 			.selectAll("g")
-			.data(sequence, function(d) { return d.name + d.depth; });
+			.data(sequence, function(d) { return d.data.name + d.depth; });
 
 		// Add breadcrumb and label for entering nodes.
 		var entering = g.enter().append("svg:g");
 
 		entering.append("svg:polygon")
 			.attr("points", this.breadcrumbPoints.bind(that))
-			.style("fill", function(d) { return that.getColorByName(d.name); });
+			.style("fill", function(d) { return that.getColorByName(d.data.name); });
 
 		entering.append("svg:text")
 			.attr("x", (b.w + b.t) / 2)
 			.attr("y", b.h / 2)
 			.attr("dy", "0.35em")
 			.attr("text-anchor", "middle")
-			.text(function(d) { return d.name; });
+			.text(function(d) { return d.data.name; });
 
 		// Set position for entering and updating nodes.
 		g.attr("transform", function(d, i) {
@@ -322,10 +325,10 @@
 
 		var legend = d3.select(this.opt.selectors.legend).append("svg:svg")
 			.attr("width", li.w)
-			.attr("height", d3.keys(this.opt.colors).length * (li.h + li.s));
+			.attr("height", Object.keys(this.opt.colors).length * (li.h + li.s));
 
 		var g = legend.selectAll("g")
-			.data(d3.entries(this.opt.colors))
+			.data(Object.entries(this.opt.colors))
 			.enter().append("svg:g")
 			.attr("transform", function(d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
