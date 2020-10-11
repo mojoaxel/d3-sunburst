@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/mojoaxel/d3-sunburst#readme",
   "dependencies": {
-    "d3": "^3.5.17"
+    "d3": "^6.2.0"
   },
   "devDependencies": {
     "eslint": "^6.6.0"

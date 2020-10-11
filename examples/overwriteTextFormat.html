@@ -5,7 +5,7 @@
 		<title>Sequences sunburst</title>
 		<link rel="stylesheet" type="text/css" href="../sunburst.css"/>
 		<link rel="stylesheet" type="text/css" href="./examples.css"/>
-		<script src="../node_modules/d3/d3.min.js" type="text/javascript"></script>
+		<script src="../node_modules/d3/dist/d3.min.js" type="text/javascript"></script>
 		<script src="../sunburst.js" type="text/javascript"></script>
 
 		<style type="text/css">
@@ -40,7 +40,7 @@
 
 				sunburst.formatDescription = function(sequence, value, percentage) {
 					var obj = sequence[sequence.length-1];
-					return "<b>" + obj.name + "</b><br>" +
+					return "<b>" + obj.data.name + "</b><br>" +
 						value + "<br>" +
 						percentage + " %";
 				}
