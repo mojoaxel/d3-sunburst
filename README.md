@@ -24,7 +24,3 @@ If you want to simply reuse this with your own data, here are some tips for gene
 * to keep the number of permutations low, use a small number of unique step names, and a small maximum sequence length. Larger numbers of either of these will lead to a very large CSV that will be slow to process (and therefore require pre-processing into hierarchical JSON).
 
 [Kerry Rodden](https://bl.ocks.org/kerryrodden) created this example in his work at Google, but it is not part of any Google product. It is covered by the Apache license (see the [LICENSE](LICENSE.md) file).
-
----
-
-**NOTE: This requires d3 version 3. Go [here](http://gist.github.com/kerryrodden/766f8f6d31f645c39f488a0befa1e3c8) if you want a version that works with d3 version 4, instead.**
