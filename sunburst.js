@@ -82,6 +82,12 @@
 		}.bind(this));
 	}
 
+	Sunburst.prototype.loadJson = function(jsonFile) {
+		d3.json(jsonFile).then(function(json) {
+			this.createVisualization(json);
+		}.bind(this));
+	}
+
 	// Main function to draw and set up the visualization, once we have the data.
 	Sunburst.prototype.createVisualization = function(json) {
 		var that = this;
