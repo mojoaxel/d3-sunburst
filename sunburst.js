@@ -301,7 +301,7 @@
 			.text(function(d) { return d.data.name; });
 
 		// Set position for entering and updating nodes.
-		g.attr("transform", function(d, i) {
+		entering.attr("transform", function(d, i) {
 			return "translate(" + i * (b.w + b.s) + ", 0)";
 		});
 
