@@ -4,9 +4,42 @@ This component is based on [an example](https://bl.ocks.org/kerryrodden/7090426)
 
 A good use case is to summarize navigation paths through a web site, as in the sample synthetic data file (visit_sequences.csv). The visualization makes it easy to understand visits that start directly on a product page (e.g. after landing there from a search engine), compared to visits where users arrive on the site's home page and navigate from there. Where a funnel lets you understand a single pre-selected path, this allows you to see all possible paths.
 
+## Installation
+
+This library has a peer-dependency on d3 >= v6.
+
+If you need support for d3@3 please use d3-
+
+### Browser
+
+```html
+<script src="https://unpkg.com/d3@6/dist/d3.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/d3-sunburst@5/sunburst.js" type="text/javascript"></script>
+```
+
+### node (browserify, webpack ...)
+
+```js
+npm install d3 d3-sunburst
+```
+
+```js
+var d3 = require('d3');
+var Sunburst = require('d3-sunburst');
+```
+
 ## Usage
 
 For now see [examples](./examples/) on how to use this component.
+
+```js
+var sunburst = new Sunburst();
+sunburst.setData([
+  ["account-account-account", 22781],
+  ["account-account-end", 3311],
+  ["account-account-home", 906]
+]);
+```
 
 ## Features
 

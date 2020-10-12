@@ -23,8 +23,8 @@
     "url": "https://github.com/mojoaxel/d3-sunburst/issues"
   },
   "homepage": "https://github.com/mojoaxel/d3-sunburst#readme",
-  "dependencies": {
-    "d3": "^6.2.0"
+  "peerDependencies": {
+    "d3": "6"
   },
   "devDependencies": {
     "eslint": "^7.11.0"
