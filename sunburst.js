@@ -345,14 +345,14 @@
 			.attr("ry", li.r)
 			.attr("width", li.w)
 			.attr("height", li.h)
-			.style("fill", function(d) { return d.value; });
+			.style("fill", function(d) { return d[1]; });
 
 		g.append("svg:text")
 			.attr("x", li.w / 2)
 			.attr("y", li.h / 2)
 			.attr("dy", "0.35em")
 			.attr("text-anchor", "middle")
-			.text(function(d) { return d.key; });
+			.text(function(d) { return d[0]; });
 	}
 
 	// Take a 2-column CSV and transform it into a hierarchical structure suitable
